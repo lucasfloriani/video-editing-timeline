@@ -90,6 +90,7 @@ const ITEMS: Items = [
 
 const Example = () => {
   const [cards, setCards] = useState<Items>(ITEMS);
+  const itemsLength = cards.length;
   const maxSize = cards.length + 3;
 
   const findCard = useCallback(
@@ -135,9 +136,11 @@ const Example = () => {
         const indexToRemove =
           side === "left"
             ? Math.max(cardIndex - 1, 0)
-            : Math.min(cardIndex + 1, maxSize - 1);
+            : Math.min(cardIndex + 1, itemsLength - 1);
         const canBeRemoved =
-          !prevCards[indexToRemove].text && cardPrevSize < size;
+          !prevCards[indexToRemove].text &&
+          cardIndex !== indexToRemove &&
+          cardPrevSize < size;
 
         const sizeWithoutCard = prevSizes - cardPrevSize;
         const newSize = sizeWithoutCard + size;
@@ -154,7 +157,7 @@ const Example = () => {
           : transformedCards;
       });
     },
-    [getCardsSize, maxSize]
+    [getCardsSize, itemsLength, maxSize]
   );
 
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CARD }));
